@@ -1,0 +1,16 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Destroying cluster: {{ cluster.name }} @{{ console_url }}"
+  shell:
+    cmd: "./openshift-install destroy cluster --dir . --log-level=info"
+    chdir: "{{ install_dir }}"
+  ignore_errors: True
+
+
+- name: "Cleanning installation folder"
+  file:
+    path: "{{ install_dir }}"
+    state: absent

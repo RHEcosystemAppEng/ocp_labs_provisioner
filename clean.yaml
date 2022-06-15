@@ -1,0 +1,17 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+  tasks:
+    - name: "Loading Configuration/s"
+      include_vars: "./{{ deployment }}"
+
+    - name: "Loading Default Vars"
+      include_vars: ./config/default_vars.yaml
+
+    - name: "Destroying clusters"
+      include_tasks: ./playbooks/openshift_destroy.yaml
