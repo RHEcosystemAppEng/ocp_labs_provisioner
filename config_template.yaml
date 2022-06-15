@@ -4,8 +4,8 @@
 
 ---
 clusters:
-  - name: laboratory-test # DNS compatible
-    version: 4.10.10      # X.Y.Z
+  - name: "..." # DNS compatible
+    version: X.Y.Z      # X.Y.Z
 
     # install-config.yaml inception
     spec:
@@ -13,7 +13,7 @@ clusters:
       baseDomain: "..."
 
       metadata:
-        name: laboratory-test # DNS compatible
+        name: "..." # DNS compatible
 
       controlPlane:
         name: master
@@ -48,5 +48,4 @@ clusters:
           region: eu-west-1
 
       sshKey: '...'
-      ullSecret: '...'
-
+      pullSecret: '...'
