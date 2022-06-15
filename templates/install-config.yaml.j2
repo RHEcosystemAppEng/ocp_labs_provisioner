@@ -1,0 +1,63 @@
+# vim: noai:ts=2:sw=2:ft=yaml
+---
+
+apiVersion: v1
+baseDomain: {{ cluster.baseDomain }}
+metadata:
+  name: {{ cluster.metadata.name }}
+controlPlane:
+  name: {{ cluster.controlPlane.name | default('master') }}
+  hyperthreading: Enabled
+  replicas: {{ cluster.controlPlane.replicas | default(3) }}
+  platform:
+{% if cluster.platform.provider == 'aws' %}
+    aws:
+{% elif cluster.platform.provider == 'gcp' %}
+    gcp:
+{% endif %}
+      zones: {{ cluster.controlPlane.zones }}
+      type: {{ cluster.controlPlane.type }}
+
+compute:
+{% for pool in cluster.compute if cluster.compute is defined %}
+- name: {{ pool.name }}
+  hyperthreading: Enabled
+  replicas: {{ pool.replicas }}
+  platform:
+{% if cluster.platform.provider == 'aws' %}
+    aws:
+{% elif cluster.platform.provider == 'gcp' %}
+    gcp:
+{% endif %}
+      zones: {{ pool.zones }}
+      type: {{ pool.type }}
+{% else %}
+- name: worker
+  hyperthreading: Enabled
+  replicas: 0
+{% endfor %}
+
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  machineNetwork:
+  - cidr: 10.0.0.0/16
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+
+platform:
+{% if cluster.platform.provider == 'aws' %}
+  aws:
+    region: {{ cluster.platform.region }}
+{% elif cluster.platform.provider == 'gcp' %}
+  gcp:
+    projectID: {{ cluster.platform.projectID }}
+    region: {{ cluster.platform.region }}
+{% endif %}
+publish: External
+pullSecret: '{{ cluster.pullSecret | default(lookup("file", "./secrets/default_pullSecret.txt")) }}'
+sshKey: |
+  {{ cluster.pullSecret | default(lookup('file', './secrets/default_sshKey.pub')) }}
+

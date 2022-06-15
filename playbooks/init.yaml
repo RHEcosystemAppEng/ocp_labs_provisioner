@@ -1,5 +1,5 @@
 ## Red Hat Intel Openshift Lab config tool
-#################################################################################
+################################################################################
 ## vim: noai:ts=2:sw=2
 
 ---
@@ -8,17 +8,12 @@
     path: "{{ install_dir }}"
     state: directory
 
-- name: "Init - Installing: {{ cluster.name }}"
-  debug:
-    msg: "Installing Cluster: {{ cluster.name }}"
-
 - name: "Init - Generating install-config.yaml file"
   copy:
     content: "{{ cluster.spec | to_nice_yaml }}"
     dest: "{{ install_dir }}/install-config.yaml"
 
-- name: "Init - Install Openshift"
-  include_tasks: ./ocp_install.yaml
-
-- name: "Init - Print Credentials"
-  include_tasks: ./ocp_print_credentials.yaml
+- name: "Init - Generating cluster-config.yaml file"
+  copy:
+    content: "{{ cluster.config | to_nice_yaml(indent=2) | indent(width=2)}}"
+    dest: "{{ install_dir }}/cluster-config.yaml"

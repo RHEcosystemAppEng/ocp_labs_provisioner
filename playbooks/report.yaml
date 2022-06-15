@@ -3,13 +3,18 @@
 ## vim: noai:ts=2:sw=2
 
 ---
-- name: "Getting credentials from install output file"
+- name: "Report - Generating config report"
+  template:
+    src: "{{ report_template }}"
+    dest: "{{ install_dir }}/report.md"
+
+- name: "Report - Getting credentials from install output file"
   shell:
     cmd: "cat kubeadmin-password"
     chdir: "{{ install_dir }}/auth"
   register: credentials
 
-- name: "Print Credentials"
+- name: "Report - Print Credentials"
   debug:
     msg:
       - "Cluster name: {{ cluster.name }}"

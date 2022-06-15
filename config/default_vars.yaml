@@ -1,12 +1,22 @@
 ## Red Hat Intel Openshift Lab config tool
-#################################################################################
+################################################################################
 ## vim: noai:ts=2:sw=2
 
 ---
+## Basic Vars (DO NOT EDIT)
+################################################################################
+# Internal dirs
 build_dir: "./build"
 install_dir: "{{ build_dir }}/{{ cluster.name }}_install_dir"
+templates_dir: "./templates"
 
+## Templates
+auth_htpasswd_template: "{{ templates_dir }}/oauth_htpasswd.yaml.j2"
+auth_htpasswd_file: "{{ install_dir }}/htpasswd"
+report_template: "{{ templates_dir }}/report.md.j2"
+
+## Openshift
 openshift_installer_download_file: "openshift-install-linux.tar.gz"
 openshift_installer_download_endpoint: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ cluster.version }}/{{ openshift_installer_download_file }}"
-
 console_url: "https://console-openshift-console.apps.{{ cluster.spec.metadata.name }}.{{ cluster.spec.baseDomain }}"
+kubeconfig: "{{ cluster.config.kubeconfig | default(install_dir + '/auth/kubeconfig') }}"

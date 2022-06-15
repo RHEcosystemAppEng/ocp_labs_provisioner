@@ -1,0 +1,15 @@
+## Red Hat Intel Openshift Lab config tool
+################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Openshift Configuration - Configuring Authentication provider"
+  import_tasks: ./playbooks/config_auth_provider.yaml
+  when:
+    - cluster.config.auth.provider is defined
+
+- name: "Openshift Configuration - Configuring User Groups"
+  import_tasks: ./playbooks/config_groups.yaml
+
+- name: "Openshift Configuration - Configuring OCP Internal Registry"
+  import_tasks: ./playbooks/config_registry.yaml

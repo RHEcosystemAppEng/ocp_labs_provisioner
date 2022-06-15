@@ -1,0 +1,29 @@
+## Red Hat Intel Openshift Lab config tool
+################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Openshift Install - Installing: {{ cluster.name }}"
+  debug:
+    msg: "Installing Cluster: {{ cluster.name }}"
+
+- name: "Openshift Install - Keep install-config.yaml copy"
+  copy:
+    src: "{{ install_dir }}/install-config.yaml"
+    dest: "{{ install_dir }}/copy-install-config.yaml"
+
+- name: "Openshift Install - Getting Installer for Openshift {{ cluster.version }}"
+  get_url:
+    url: "{{ openshift_installer_download_endpoint }}"
+    dest: "{{ install_dir }}"
+    mode: '0640'
+
+- name: "Openshift Install - Unarchive installer"
+  shell:
+    cmd: "tar -xf {{ openshift_installer_download_file }}"
+    chdir: "{{ install_dir }}"
+
+- name: "Openshift Install - Create Cluster"
+  shell:
+    cmd: "./openshift-install create cluster --dir . --log-level=info"
+    chdir: "{{ install_dir }}"

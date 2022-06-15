@@ -1,0 +1,25 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Groups - Creating Groups"
+  shell: |
+    oc adm groups new {{ group.name }}
+    oc adm policy add-cluster-role-to-group {{ group.clusterRole }} {{ group.name }} --rolebinding-name {{ group.name }}-{{ group.clusterRole }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  loop_control:
+    loop_var: group
+  with_items:
+    - "{{ cluster.config.auth.groups }}"
+
+- name: "Adding Users to groups"
+  shell: |
+    oc adm groups add-users {{ user.group }} {{ user.name }}
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  loop_control:
+    loop_var: user
+  with_items:
+    - "{{ cluster.config.auth.users }}"

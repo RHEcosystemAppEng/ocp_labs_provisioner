@@ -1,0 +1,24 @@
+# Cluster {{ cluster.name }} Configuration Report
+
+## Access Data
+* **Cluster:** {{ cluster.name }}
+* **Console:** *https://console-openshift-console.{{ cluster.spec.baseDomain }}*
+* **Authentication Provider:** {{ cluster.config.auth.provider.keys() | list | to_yaml | replace('[', '') | replace(']','') }}
+
+
+## Users
+{% for user in cluster.config.auth.users %}
+- **Username:** {{ user.name }}
+  **Password:** {{ user.pass }}
+{% endfor %}
+
+
+## Groups
+{% for group in cluster.config.auth.groups %}
+- **Group Name:** {{ group.name }}
+  **Group Role:** {{ group.clusterRole }}
+{% endfor %}
+
+
+## Image Registry
+- Hostname: *https://{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}*

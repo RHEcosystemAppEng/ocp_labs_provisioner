@@ -7,15 +7,22 @@
   become: no
   gather_facts: no
   tasks:
+    - name: "Loading Configuration/s"
+      include_vars: "./{{ deployment }}"
+
     - name: "Loading Default Vars"
       include_vars: ./config/default_vars.yaml
 
-    - name: "Loading Configuration/s"
-      include_vars: "./{{ config }}"
-
-    - name: "Install and Configure"
+    - name: "Initializating..."
       include_tasks: ./playbooks/init.yaml
-      loop_control:
-        loop_var: cluster
-      with_items:
-        - "{{ clusters }}"
+
+    - name: "Installing Openshift"
+      include_tasks: ./playbooks/openshift_install.yaml
+      tags: install
+   
+    - name: "Configuring Openshift"
+      include_tasks: ./playbooks/openshift_configure.yaml
+      tags: config
+
+    - name: "Generating Cluster Report"
+      include_tasks: ./playbooks/report.yaml
