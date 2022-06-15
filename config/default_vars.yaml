@@ -1,0 +1,12 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+build_dir: "./build"
+install_dir: "{{ build_dir }}/{{ cluster.name }}_install_dir"
+
+openshift_installer_download_file: "openshift-install-linux.tar.gz"
+openshift_installer_download_endpoint: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ cluster.version }}/{{ openshift_installer_download_file }}"
+
+console_url: "https://console-openshift-console.apps.{{ cluster.spec.metadata.name }}.{{ cluster.spec.baseDomain }}"

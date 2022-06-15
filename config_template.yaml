@@ -1,0 +1,52 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+clusters:
+  - name: laboratory-test # DNS compatible
+    version: 4.10.10      # X.Y.Z
+
+    # install-config.yaml inception
+    spec:
+      apiVersion: v1
+      baseDomain: "..."
+
+      metadata:
+        name: laboratory-test # DNS compatible
+
+      controlPlane:
+        name: master
+        replicas: 3
+        platform:
+          aws:
+            type: m5.xlarge
+            zones:
+            - eu-west-1a
+
+      compute:
+        - name: worker
+          replicas: 3
+          platform:
+            aws:
+              type: m5.xlarge
+              zones:
+                - eu-west-1a
+
+      networking:
+        clusterNetwork:
+        - cidr: 10.128.0.0/14
+          hostPrefix: 23
+        machineNetwork:
+        - cidr: 10.0.0.0/16
+        networkType: OpenShiftSDN
+        serviceNetwork:
+        - 172.30.0.0/16
+
+      platform:
+        aws:
+          region: eu-west-1
+
+      sshKey: '...'
+      ullSecret: '...'
+
