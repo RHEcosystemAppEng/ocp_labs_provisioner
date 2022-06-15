@@ -1,0 +1,39 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Registry - Unexposing registry"
+  shell: |
+    oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":false}}' --type=merge
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  when:
+    - not cluster.config.registry.expose
+  
+- block:
+  - name: "Registry - Exposing registry by OCP Route"
+    shell: |
+      oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
+    environment:
+      KUBECONFIG: "{{ kubeconfig }}"
+
+  - name: "Registry - Getting cluster domain"
+    shell: |
+      oc get ingresses.config/cluster -o jsonpath={.spec.domain}
+    environment:
+      KUBECONFIG: "{{ kubeconfig }}"
+    register: ocp_cluster_domain
+
+  - name: "Registry - Exposing registry by OCP Route"
+    shell: |
+      oc patch route default-route -n openshift-image-registry --patch '{"spec":{"host": "{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}"}}' --type=merge
+    environment:
+      KUBECONFIG: "{{ kubeconfig }}"
+    register: ocp_route_hostname
+    retries: 5
+    delay: 5
+    until: ocp_route_hostname.rc == 0
+
+  when:
+    - cluster.config.registry.expose

@@ -4,48 +4,76 @@
 
 ---
 clusters:
-  - name: "..." # DNS compatible
-    version: X.Y.Z      # X.Y.Z
+  name: "..." # DNS compatible
+  version: X.Y.Z      # X.Y.Z
 
-    # install-config.yaml inception
-    spec:
-      apiVersion: v1
-      baseDomain: "..."
+  # config_template.yaml inception
+  config:
+    name: laboratory-test
+      #kubeconfig: "./auth/kubeconfig"    # Optional
 
-      metadata:
-        name: "..." # DNS compatible
+    ## Openshift Image Registry Configuration
+    registry:
+      expose: true
+      hostname: "openshift-registry" # Only type route prefix for *.apps domain. Cluster domain will be added automatically
 
-      controlPlane:
-        name: master
+    auth:
+      provider:
+        htpasswd:
+          name: "htpasswd"
+      users:
+        - name: admin
+          pass: admin
+          group: admins
+        - name: dev
+          pass: dev
+          group: developers
+      groups:
+        - name: admins
+          clusterRole: cluster-admin
+        - name: developers
+          clusterRole: basic-user
+
+
+  # install-config.yaml inception
+  spec:
+    apiVersion: v1
+    baseDomain: "..."
+
+    metadata:
+      name: "..." # DNS compatible
+
+    controlPlane:
+      name: master
+      replicas: 3
+      platform:
+        aws:
+          type: m5.xlarge
+          zones:
+          - eu-west-1a
+
+    compute:
+      - name: worker
         replicas: 3
         platform:
           aws:
             type: m5.xlarge
             zones:
-            - eu-west-1a
+              - eu-west-1a
 
-      compute:
-        - name: worker
-          replicas: 3
-          platform:
-            aws:
-              type: m5.xlarge
-              zones:
-                - eu-west-1a
+    networking:
+      clusterNetwork:
+      - cidr: 10.128.0.0/14
+        hostPrefix: 23
+      machineNetwork:
+      - cidr: 10.0.0.0/16
+      networkType: OpenShiftSDN
+      serviceNetwork:
+      - 172.30.0.0/16
 
-      networking:
-        clusterNetwork:
-        - cidr: 10.128.0.0/14
-          hostPrefix: 23
-        machineNetwork:
-        - cidr: 10.0.0.0/16
-        networkType: OpenShiftSDN
-        serviceNetwork:
-        - 172.30.0.0/16
+    platform:
+      aws:
+        region: eu-west-1
 
-      platform:
-        aws:
-          region: eu-west-1
-
-      sshKey: '...'
-      pullSecret: '...'
+    sshKey: '...'
+    pullSecret: '...'

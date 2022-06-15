@@ -1,0 +1,9 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Auth Provider - HTPassswd"
+  include_tasks: ./playbooks/config_auth_provider_htpasswd.yaml
+  when:
+    - cluster.config.auth.provider.htpasswd is defined
