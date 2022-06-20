@@ -3,21 +3,29 @@
 ## vim: noai:ts=2:sw=2
 
 ---
-- name: "Report - Generating config report"
-  template:
-    src: "{{ report_template }}"
-    dest: "{{ install_dir }}/report.md"
+- name: "Report - Checking cluster data"
+  stat:
+    path: "{{ install_dir }}/auth"
+  register: cluster_exists
 
-- name: "Report - Getting credentials from install output file"
-  shell:
-    cmd: "cat kubeadmin-password"
-    chdir: "{{ install_dir }}/auth"
-  register: credentials
+- block:
+  - name: "Report - Generating config report"
+    template:
+      src: "{{ report_template }}"
+      dest: "{{ install_dir }}/report.md"
 
-- name: "Report - Print Credentials"
-  debug:
-    msg:
-      - "Cluster name: {{ cluster.name }}"
-      - "URL: {{ console_url }} "
-      - "User: kubeadmin "
-      - "Pass: {{ credentials.stdout }} "
+  - name: "Report - Getting credentials from install output file"
+    shell:
+      cmd: "cat kubeadmin-password"
+      chdir: "{{ install_dir }}/auth"
+    register: credentials
+
+  - name: "Report - Print Credentials"
+    debug:
+      msg:
+        - "Cluster name: {{ cluster.name }}"
+        - "URL: {{ console_url }} "
+        - "User: kubeadmin "
+        - "Pass: {{ credentials.stdout }} "
+  when:
+    - cluster_exists.stat.exists
