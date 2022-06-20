@@ -1,0 +1,20 @@
+## Red Hat Intel Openshift Lab config tool
+################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "AWS - Print Profile"
+  debug:
+    msg: "Using {{ cluster.cloud.aws.profile.aws_account_name }} Profile"
+
+- name: "AWS - Generating config file"
+  copy:
+    content: |
+      [default]
+      aws_access_key_id = {{ cluster.cloud.aws.profile.aws_access_key_id }}
+      aws_secret_access_key = {{ cluster.cloud.aws.profile.aws_secret_access_key }}
+    dest: "{{ install_dir }}/aws_profile.cfg"
+
+- name: "AWS - Set fact"
+  set_fact:
+    _cloud_profile: "AWS_SHARED_CREDENTIALS_FILE='aws_profile.cfg'"

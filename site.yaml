@@ -19,7 +19,7 @@
     - name: "Installing Openshift"
       include_tasks: ./playbooks/openshift_install.yaml
       tags: install
-   
+
     - name: "Configuring Openshift"
       include_tasks: ./playbooks/openshift_configure.yaml
       tags: config

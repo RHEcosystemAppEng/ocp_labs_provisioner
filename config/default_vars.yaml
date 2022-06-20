@@ -7,7 +7,7 @@
 ################################################################################
 # Internal dirs
 build_dir: "./build"
-install_dir: "{{ build_dir }}/{{ cluster.name }}_install_dir"
+install_dir: "{{ build_dir }}/{{ cluster.name }}.{{ cluster.spec.baseDomain }}"
 templates_dir: "./templates"
 
 ## Templates

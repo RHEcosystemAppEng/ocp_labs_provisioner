@@ -17,3 +17,6 @@
   copy:
     content: "{{ cluster.config | to_nice_yaml(indent=2) | indent(width=2)}}"
     dest: "{{ install_dir }}/cluster-config.yaml"
+
+- name: "Init - Configuring cloud access"
+  import_tasks: ./playbooks/cloud_init.yaml
