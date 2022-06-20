@@ -2,7 +2,7 @@
 
 ## Access Data
 * **Cluster:** {{ cluster.name }}
-* **Console:** *https://console-openshift-console.{{ cluster.spec.baseDomain }}*
+* **Console:** *https://console-openshift-console.apps.{{ cluster.spec.metadata.name }}.{{ cluster.spec.baseDomain }}*
 * **Authentication Provider:** {{ cluster.config.auth.provider.keys() | list | to_yaml | replace('[', '') | replace(']','') }}
 
 
@@ -21,4 +21,4 @@
 
 
 ## Image Registry
-- Hostname: *https://{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}*
+- Public Route Hostname: *https://{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}*

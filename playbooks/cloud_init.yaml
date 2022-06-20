@@ -1,0 +1,9 @@
+## Red Hat Intel Openshift Lab config tool
+################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Cloud Init - AWS"
+  import_tasks: ./playbooks/cloud_aws.yaml
+  when:
+    cluster.cloud.aws is defined

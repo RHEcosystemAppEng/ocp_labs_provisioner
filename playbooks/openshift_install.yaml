@@ -12,18 +12,29 @@
     src: "{{ install_dir }}/install-config.yaml"
     dest: "{{ install_dir }}/copy-install-config.yaml"
 
+- name: "Openshift Install - Checking installer"
+  stat:
+    path: "{{ install_dir }}/{{ openshift_installer_download_file }}"
+  register: openshit_installer_file_stat
+
 - name: "Openshift Install - Getting Installer for Openshift {{ cluster.version }}"
   get_url:
     url: "{{ openshift_installer_download_endpoint }}"
     dest: "{{ install_dir }}"
     mode: '0640'
+  when:
+    - not openshit_installer_file_stat.stat.exists
 
 - name: "Openshift Install - Unarchive installer"
   shell:
     cmd: "tar -xf {{ openshift_installer_download_file }}"
     chdir: "{{ install_dir }}"
+  when:
+    - not openshit_installer_file_stat.stat.exists
 
 - name: "Openshift Install - Create Cluster"
   shell:
-    cmd: "./openshift-install create cluster --dir . --log-level=info"
+    cmd: |
+      export {{ _cloud_profile }}
+      ./openshift-install create cluster --dir . --log-level=info
     chdir: "{{ install_dir }}"
