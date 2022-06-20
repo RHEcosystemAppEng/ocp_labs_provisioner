@@ -1,0 +1,20 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- hosts: localhost
+  become: no
+  gather_facts: no
+  tasks:
+    - name: "Loading Default Vars"
+      include_vars: ./config/default_vars.yaml
+
+    - name: "Loading Configuration"
+      include_vars: "./{{ config }}"
+
+    - name: "Running Openshift Configuration process"
+      include_tasks: ./playbooks/init.yaml
+
+    - name: "Generating Cluster Report"
+      include_tasks: ./playbooks/report.yaml
