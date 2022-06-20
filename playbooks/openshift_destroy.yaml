@@ -5,10 +5,10 @@
 ---
 - name: "Destroying cluster: {{ cluster.name }} @{{ console_url }}"
   shell:
-    cmd: "./openshift-install destroy cluster --dir . --log-level=info"
+    cmd: |
+      export {{ _cloud_profile }}
+      ./openshift-install destroy cluster --dir . --log-level=info
     chdir: "{{ install_dir }}"
-  ignore_errors: True
-
 
 - name: "Cleanning installation folder"
   file:

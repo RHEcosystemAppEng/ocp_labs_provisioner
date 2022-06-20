@@ -13,5 +13,8 @@
     - name: "Loading Default Vars"
       include_vars: ./config/default_vars.yaml
 
+    - name: "Initializating..."
+      import_tasks: ./playbooks/cloud_init.yaml
+
     - name: "Destroying clusters"
       include_tasks: ./playbooks/openshift_destroy.yaml
