@@ -7,14 +7,36 @@
   debug:
     msg: "Using {{ cluster.cloud.aws.profile.aws_account_name }} Profile"
 
-- name: "AWS - Generating config file"
-  copy:
-    content: |
-      [default]
-      aws_access_key_id = {{ cluster.cloud.aws.profile.aws_access_key_id }}
-      aws_secret_access_key = {{ cluster.cloud.aws.profile.aws_secret_access_key }}
-    dest: "{{ install_dir }}/aws_profile.cfg"
+- name: "AWS - Configuring Credentials for OCP installers <= 4.10"
+  block:
+  - name: "AWS - Set fact"
+    set_fact:
+      _cloud_profile: "export AWS_SHARED_CREDENTIALS_FILE=./aws_profile.cfg"
 
-- name: "AWS - Set fact"
-  set_fact:
-    _cloud_profile: "AWS_SHARED_CREDENTIALS_FILE='aws_profile.cfg'"
+  - name: "AWS - Generating config file"
+    copy:
+      content: |
+        [default]
+        aws_access_key_id = {{ cluster.cloud.aws.profile.aws_access_key_id }}
+        aws_secret_access_key = {{ cluster.cloud.aws.profile.aws_secret_access_key }}
+      dest: "{{ install_dir }}/aws_profile.cfg"
+      force: true
+  when:
+    - cluster.version is version('4.10', '<=')
+
+
+- name: "AWS - Configuring Credentials for OCP installers >= 4.11"
+  block:
+  - name: "AWS - Set fact"
+    set_fact:
+      _cloud_profile: |
+        export AWS_ACCESS_KEY_ID = {{ cluster.cloud.aws.profile.aws_access_key_id }}
+        export AWS_SECRET_ACCESS_KEY = {{ cluster.cloud.aws.profile.aws_secret_access_key }}
+  when:
+    - cluster.version is version('4.11', '>=')
+
+
+- name: "Debug"
+  debug:
+    msg: |
+      {{ _cloud_profile }}

@@ -35,6 +35,6 @@
 - name: "Openshift Install - Create Cluster"
   shell:
     cmd: |
-      export {{ _cloud_profile }}
+      {{ _cloud_profile }}
       ./openshift-install create cluster --dir . --log-level=info
     chdir: "{{ install_dir }}"

@@ -20,5 +20,7 @@
 {% endfor %}
 
 
+{% if cluster.config.registry.expose %}
 ## Image Registry
 - Public Route Hostname: *https://{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}*
+{% endif %}

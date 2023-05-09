@@ -10,7 +10,7 @@
     KUBECONFIG: "{{ kubeconfig }}"
   when:
     - not cluster.config.registry.expose
-  
+
 - block:
   - name: "Registry - Exposing registry by OCP Route"
     shell: |
