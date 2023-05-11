@@ -8,7 +8,7 @@
 
 ## Users
 {% for user in cluster.config.auth.users %}
-- **Username:** {{ user.name }}
+- **Username:** {{ user.name }} <br/>
   **Password:** {{ user.pass }}
 {% endfor %}
 
