@@ -13,3 +13,6 @@
 
 - name: "Openshift Configuration - Configuring OCP Internal Registry"
   import_tasks: ./playbooks/config_registry.yaml
+
+- name: "Openshift Configuration - Banner"
+  import_tasks: ./playbooks/config_registry.yaml

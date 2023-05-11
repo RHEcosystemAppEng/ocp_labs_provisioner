@@ -9,8 +9,12 @@ clusters:
 
   # config_template.yaml inception
   config:
-    name: laboratory-test
-      #kubeconfig: "./auth/kubeconfig"    # Optional
+    name: "..." # DNS compatible
+    #kubeconfig: "./auth/kubeconfig"    # Optional
+
+    # Banner config
+    banner:
+      text: "Custom Banner Message"
 
     ## Openshift Image Registry Configuration
     registry:

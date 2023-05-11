@@ -1,0 +1,14 @@
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleNotification
+metadata:
+  name: banner
+spec:
+{% if cluster.config.banner.text is defined %}
+  text: "{{ cluster.config.banner.text }}"
+{% else %}
+  text: "Cluster {{ cluster.name }}. This environment is just for developing purposes. Every activity will be monitored"
+{% endif %}
+  location: BannerTop
+  color: '#ffffff'
+  backgroundColor: '#c41b12' 

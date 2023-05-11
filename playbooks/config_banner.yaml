@@ -1,0 +1,15 @@
+## Red Hat Intel Openshift Lab config tool
+#################################################################################
+## vim: noai:ts=2:sw=2
+
+---
+- name: "Banner - Parsing template"
+  template:
+    src: "{{ banner_template }}"
+    dest: "{{ install_dir }}/banner.yaml"
+
+- name: "Banner - Applying template"
+  shell: |
+    oc apply -f {{ install_dir }}/banner.yaml -n openshift-console
+  when:
+    - cluster.config.baner is defined
