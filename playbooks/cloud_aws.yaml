@@ -7,11 +7,14 @@
   debug:
     msg: "Using {{ cluster.cloud.aws.profile.aws_account_name }} Profile"
 
+# The following blocks are compared with 4.11 because the installer changes the way to obtain the credentials
+
 - name: "AWS - Configuring Credentials for OCP installers <= 4.10"
   block:
-  - name: "AWS - Set fact"
+  - name: "AWS - Set facts for OCP installers <= 4.10"
     set_fact:
-      _cloud_profile: "export AWS_SHARED_CREDENTIALS_FILE=./aws_profile.cfg"
+      _cloud_profile: |
+        export AWS_SHARED_CREDENTIALS_FILE=./aws_profile.cfg
 
   - name: "AWS - Generating config file"
     copy:
@@ -22,21 +25,20 @@
       dest: "{{ install_dir }}/aws_profile.cfg"
       force: true
   when:
-    - cluster.version is version('4.10', '<=')
+    - cluster.version is version('4.11', '<')
 
 
 - name: "AWS - Configuring Credentials for OCP installers >= 4.11"
   block:
-  - name: "AWS - Set fact"
+  - name: "AWS - Set facts for OCP installers >= 4.11"
     set_fact:
       _cloud_profile: |
-        export AWS_ACCESS_KEY_ID = {{ cluster.cloud.aws.profile.aws_access_key_id }}
-        export AWS_SECRET_ACCESS_KEY = {{ cluster.cloud.aws.profile.aws_secret_access_key }}
+        export AWS_ACCESS_KEY_ID={{ cluster.cloud.aws.profile.aws_access_key_id }}
+        export AWS_SECRET_ACCESS_KEY={{ cluster.cloud.aws.profile.aws_secret_access_key }}
   when:
     - cluster.version is version('4.11', '>=')
 
-
-- name: "Debug"
-  debug:
-    msg: |
+- name: "Preparing env"
+  shell:
+    cmd: |
       {{ _cloud_profile }}

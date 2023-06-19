@@ -36,5 +36,5 @@
   shell:
     cmd: |
       {{ _cloud_profile }}
-      ./openshift-install create cluster --dir . --log-level=info
+      ./openshift-install create cluster --log-level=info --dir .
     chdir: "{{ install_dir }}"
