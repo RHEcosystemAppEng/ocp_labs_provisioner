@@ -9,16 +9,34 @@
   register: cluster_exists
 
 - block:
-  - name: "Report - Generating config report"
-    template:
-      src: "{{ report_template }}"
-      dest: "{{ install_dir }}/report.md"
-
-  - name: "Report - Getting credentials from install output file"
+  - name: "Report - Getting kubeadmin credentials"
     shell:
       cmd: "cat kubeadmin-password"
       chdir: "{{ install_dir }}/auth"
     register: credentials
+
+  - name: "Report - Getting kubeconfig file"
+    shell:
+      cmd: "cat kubeconfig"
+      chdir: "{{ install_dir }}/auth"
+    register: kubeconfig
+
+  - name: "Report - Getting cluster certificate key"
+    shell:
+      cmd: "cat *.key"
+      chdir: "{{ install_dir }}/tls"
+    register: cert_key
+
+  - name: "Report - Getting cluster certificate"
+    shell:
+      cmd: "cat *.crt"
+      chdir: "{{ install_dir }}/tls"
+    register: cert_crt
+
+  - name: "Report - Generating config report"
+    template:
+      src: "{{ report_template }}"
+      dest: "{{ install_dir }}/report.md"
 
   - name: "Report - Print Credentials"
     debug:

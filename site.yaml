@@ -26,3 +26,4 @@
 
     - name: "Generating Cluster Report"
       include_tasks: ./playbooks/report.yaml
+      tags: report

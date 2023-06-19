@@ -7,6 +7,11 @@
 
 
 ## Users
+### Admin User
+- **Username:** kubeadmin
+- **Password:** {{ credentials.stdout }}
+
+### Extra Users
 {% for user in cluster.config.auth.users %}
 - **Username:** {{ user.name }} <br/>
   **Password:** {{ user.pass }}
@@ -15,7 +20,7 @@
 
 ## Groups
 {% for group in cluster.config.auth.groups %}
-- **Group Name:** {{ group.name }}
+- **Group Name:** {{ group.name }} <br/>
   **Group Role:** {{ group.clusterRole }}
 {% endfor %}
 
@@ -24,3 +29,22 @@
 ## Image Registry
 - Public Route Hostname: *https://{{ cluster.config.registry.hostname }}.{{ cluster.spec.baseDomain }}*
 {% endif %}
+
+## Kubeconfig
+```yaml
+{{ kubeconfig.stdout }}
+```
+
+
+## Certificates
+Key:
+```
+{{ cert_key.stdout }}
+```
+---
+
+Cert:
+```
+{{ cert_crt.stdout }}
+```
+
